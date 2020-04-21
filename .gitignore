@@ -12,3 +12,7 @@ filters/*.py
 idlebg.*
 pidfile
 player_pidfile
+MANIFEST
+build/
+dist/
+phoebe.egg-info/

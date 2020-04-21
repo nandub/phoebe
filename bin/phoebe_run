@@ -1,8 +1,9 @@
-#!/usr/bin/python2
+#!/usr/bin/env python
+
 from circuits import BaseComponent, handler
-from lib.commands import CommandExecutor
-from lib.core import PlayerManager, MessageProcessor, ICHCAPI
-from lib.events import do_join_room, do_shutdown
+from phoebe.commands import CommandExecutor
+from phoebe.core import PlayerManager, MessageProcessor, ICHCAPI
+from phoebe.events import do_join_room, do_shutdown
 from os import getpid, path, remove
 from requests import Session
 from setproctitle import getproctitle, setproctitle
@@ -61,7 +62,7 @@ class Phoebe(BaseComponent):
     def _start_application(self, component):
         '''App startup routines.'''
         logging.critical(
-            "application '{}' {} (PID: {}) started.".format(
+            "application '{0}' {1} (PID: {2}) started.".format(
                 getproctitle(), self.version, getpid()
             ))
 
@@ -100,7 +101,11 @@ class Phoebe(BaseComponent):
 def main():
     # create pidfile
     with open('pidfile', 'w') as pidfile:
-        print >>pidfile, getpid()
+        try:
+            pidfile.write("%s" % getpid())
+            pidfile.close()
+        except:
+            print >>pidfile, getpid()
 
     # import config
     config = None
@@ -132,10 +137,13 @@ def main():
     global lock_socket
     lock_socket = socket(AF_UNIX, SOCK_DGRAM)
     try:
-        lock_socket.bind('\0{}'.format(process_title))
+        socket_file = config['control_socket_file']
+
+        lock_socket.bind(socket_file)
         logging.info('got process lock')
     except socket_error:
         logging.critical('failed to get process lock; already running?')
+        raise
         sys_exit(3)
 
     # import permissions

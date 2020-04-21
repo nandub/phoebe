@@ -30,6 +30,13 @@ ICHCAPI:
   entrypoint_url: https://www.icanhazchat.com/api.ashx
   max_receipt_delay: 3600
 
+  # TODO added missing items please correct regex
+  control_regex: '.'
+  privmsg_regex: '^[priv]'
+  chat_prefix_regex: '[c*]'
+  api_throttle_idle_timeout: 10
+  api_throttle_step: 1
+
 ### ICHC API response processing settings ###
 MessageProcessor:
   # modify only when issues arise parsing API output for commands or stream IDs

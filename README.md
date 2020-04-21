@@ -13,7 +13,7 @@ Plays media from most [sites supported](https://rg3.github.io/youtube-dl/support
 
 ### Installation ###
 
-1. Ensure **Python 2.7+** is installed and updated.
+1. Ensure **Python 2.7+** or **Python 3** is installed and updated.
 2. Compile from source and install **gstreamer** for your platform (or install it from packages, if the PyGObject/GLib support mentioned later are included), along with the _base_, _good_, _bad_, and _ugly_ plugin packages, taking care to observe the following requirements when running `./configure`:
     * If compiling from source:
         * Compile all packages with support for **GObject introspection**, and **GLib asserts**.
@@ -21,9 +21,15 @@ Plays media from most [sites supported](https://rg3.github.io/youtube-dl/support
 3. Compile from source and install (or install from packages) the gstreamer **libva** plugins at the same version as those gsteamer packages previously installed.
 4. Install **youtube-dl**; take note of where the executable is placed (e.g., `which youtube-dl`)
 5. Create a directory for phoebe to run, then extract the contents of the latest release archive into that directory.
+   or 
+   experimental, it runs but I don't have a way to interact with the bot since I'm not familiar with icanhazchat bot usage
+   ```
+      python setup.py clean sdist
+      pip install dist/phoebe-X.X.X.tar.gz
+   ```
 6. Copy `config.yaml` and `permissions.yaml` from `examples/` and modify them to fit your installation.
 7. Ensure all files in the directory are owned by the same user that will run the application.
-8. Run phoebe with `./run.py`, or see the `systemd` directory for more information on setting up the bot as a service.
+8. Run phoebe with locally `./bin/phoebe_run` or using when using pip `phoebe_run`, or see the `systemd` directory for more information on setting up the bot as a service.
 
 ### Commands ###
 
@@ -76,9 +82,9 @@ Plays media from most [sites supported](https://rg3.github.io/youtube-dl/support
 
 ### Source hierarchy ###
 * **bin/** -- binaries
-    * **play.py** -- phoebe-player runtime
+    * **phoebe_play** -- phoebe-player runtime
 * **filters/** -- keyword search filter modules (see `filters/filter.py.example`) 
-* **lib/** -- application modules (a.k.a., "the good stuff")
+* **phoebe/** -- application modules (a.k.a., "the good stuff")
     * **commands.py** -- command parsing and handlers
     * **core.py** -- ICHC API handler, message processing, player supervision, core event handlers
     * **events.py** -- Circuits Event classes for all generated events
@@ -86,11 +92,11 @@ Plays media from most [sites supported](https://rg3.github.io/youtube-dl/support
     * **utils.py** -- play-request container class, site filter methods
 * **config.yaml** -- example main configuration file
 * **permissions.yaml** -- example permissions configuration file
-* **run.py** -- main runtime
+* **bin/phoebe_run** -- main runtime
 
 ### Basic installation instructions (devel) ###
 
-1. Ensure **Python 2.7+** is installed and updated.
+1. Ensure **Python 2.7+** or **Python 3** is installed and updated.
 2. Compile and install **gstreamer** for your platform, along with the _base_, _good_, _bad_, and _ugly_ plugin packages, taking care to observe the following requirements when running `./configure`:
     * Compile all packages with support for **GObject introspection**, and **GLib asserts**.
     * Optional: Ensure **orc** is installed for orc optimization support (modest performance bump).
@@ -99,4 +105,4 @@ Plays media from most [sites supported](https://rg3.github.io/youtube-dl/support
 5. Create a directory for phoebe to run, then use `git checkout` to checkout the release branch into that directory.
 6. Copy `config.yaml` and `permissions.yaml` and modify to fit your installation.
 7. Ensure all files in the directory are owned by the same user that will run the application.
-8. Run phoebe with `./run.py`
+8. Run phoebe with `./bin/phoebe_run`

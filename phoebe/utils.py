@@ -3,8 +3,11 @@ from json import loads
 from re import search
 from subprocess import CalledProcessError, check_output
 from time import time
-from urlparse import urlparse, ParseResult
 
+try:
+   from urllib.parse import urlparse
+except:
+   from urlparse import urlparse
 
 class RequestTypes:
     SITE = 1

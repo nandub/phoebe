@@ -12,9 +12,12 @@ from requests.exceptions import (
     ConnectionError, SSLError as ReqSSLError, Timeout as HTTPTimeout)
 from subprocess import Popen
 from time import sleep, time
-from urlparse import urlparse
 import logging
 
+try:
+    from urllib.parse import urlparse
+except: 
+    from urlparse import urlparse
 
 class ICHCAPI(BaseComponent):
 
@@ -192,13 +195,13 @@ class ICHCAPI(BaseComponent):
         if query_type == 'join':
             self.shm['state']['ICHCAPI']['join_lock'] = False
 
-        response_text = content.replace('\r', '').split('\n')
-
+        response_text = content.decode('utf8').replace('\r', '').split('\n')
         for idx, line in enumerate(response_text):
             # all responses must start with OK
             if idx == 0:
                 if line.strip() != 'OK':
                     error = 'non-OK response'
+                    error += ' : ' + str(line.strip())
                     break
             # extract room key from (successful) join response
             elif (idx == 1) and (query_type == 'join'):
@@ -270,7 +273,8 @@ class ICHCAPI(BaseComponent):
         api_join_attempts = self.shm['state']['ICHCAPI']['api_join_attempts']
         if api_join_attempts < max_attempts:
             remaining = max_attempts - api_join_attempts
-            api_join_attempts += 1
+            self.shm['state']['ICHCAPI']['api_join_attempts'] += 1
+            #api_join_attempts += 1
             logging.info(
                 '{}; attempting to join API ({} attempts remaining)'.format(
                     reason, remaining
@@ -694,7 +698,7 @@ class PlayerManager(BaseComponent):
 
                     self.player_mode = 'idle'
                     self.player_process = Popen([
-                        '/usr/bin/python2', 'bin/play.py', self.stream_id
+                        'phoebe_play', self.stream_id
                     ])
                 else:
                     # pop next request from queue
@@ -733,8 +737,7 @@ class PlayerManager(BaseComponent):
 
                         self.player_mode = 'media'
                         self.player_process = Popen([
-                            '/usr/bin/python2',
-                            'bin/play.py',
+                            'phoebe_play',
                             self.stream_id,
                             self.current_request.media_uri
                         ])
